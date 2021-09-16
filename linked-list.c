@@ -7,7 +7,6 @@ struct Node{
 };
 
 struct Node* head = NULL;
-struct Node* tail = NULL;
 int counter = 0;
 
 void printElements() {
@@ -17,18 +16,37 @@ void printElements() {
   }
 
   struct Node* navigator = head;
-  printf("Address pointed by head: %d\n", head);
-  printf("Address pointed by tail: %d\n", tail);
-  printf("Address pointed by navigator: %d\n", navigator);
 
   printf("[ ");
-  
   while(navigator != NULL) {
     printf("%d ", navigator->value);
     navigator = navigator->next;
   }
-
   printf("]\n");
+}
+
+void reverseLinkedList() {
+  if (head == NULL) {
+    printf("There are no elements in the linked list\n");
+    return;
+  }
+
+  if (counter == 1) {
+    return;
+  }
+
+  struct Node* current = head;
+  struct Node* previous = NULL;
+  struct Node* next;
+
+  while(current != NULL) {
+    next = current->next;
+    current->next = previous;
+    previous = current;
+    current = next;
+  }
+
+  head = previous;
 }
 
 void pushElementAtTheBeginningOfTheList(int value) {
@@ -38,10 +56,6 @@ void pushElementAtTheBeginningOfTheList(int value) {
   newNode->next = head;
 
   head = newNode;
-
-  if (counter == 1) {
-    tail = newNode->next;
-  }
 }
 
 void pushElementInTheMiddleOfTheList(int position, int value) {
@@ -60,12 +74,16 @@ void pushElementInTheMiddleOfTheList(int position, int value) {
 }
 
 void pushElementAtTheEndOfTheList(int value) {
+  struct Node* navigator = head;
+
+  while(navigator->next != NULL) {
+    navigator = navigator->next;
+  }
+
   struct Node* newNode = (struct Node*) malloc (sizeof(struct Node));
   newNode->value = value;
-
-  tail->next = newNode;
-  tail = tail->next;
-  tail->next = NULL;
+  newNode->next = NULL;
+  navigator->next = newNode;
 }
 
 void showAvailablePositions(int variable) {
@@ -88,8 +106,6 @@ void insertElement() {
     head = (struct Node*) malloc (sizeof(struct Node));
     head->value = value;
     head->next = NULL;
-
-    tail = head;
     counter++;
     return;
   }
@@ -126,7 +142,6 @@ void removeElementAtTheBeginningOfTheList() {
 
   if (counter == 1) {
     head = NULL;
-    tail = NULL;
   } else {
     head = head->next;
   }
@@ -150,27 +165,25 @@ void removeElementInTheMiddleOfTheList(int position) {
 
 void removeElementAtTheEndOfTheList() {
   struct Node* lastElement = head;
+  struct Node* previous = NULL;
 
-  while(lastElement != tail) {
-    struct Node* navigator = lastElement->next;
-
-    if(navigator->next == NULL) {
-      break;
-    }
-
+  while(lastElement->next != NULL) {
+    previous = lastElement;
     lastElement = lastElement->next;
   }
 
-  printf("Address pointed by tail: %d\n", tail);
-  printf("Address pointed by lastElement->next: %d\n:", lastElement->next);
-  free(lastElement->next);
-  tail = lastElement;
-  tail->next = NULL;
+  free(lastElement);
+  previous->next = NULL;
 }
 
 void removeElement() {
   if (counter == 0) {
     printf("There are no elements to remove!\n");
+    return;
+  }
+
+  if(counter == 1) {
+    removeElementAtTheBeginningOfTheList();
     return;
   }
 
@@ -222,6 +235,7 @@ void menu() {
   printf("1 - Print Elements\n");
   printf("2 - Insert Element\n");
   printf("3 - Remove Element\n");
+  printf("4 - Reverse Linked List\n");
   printf("99 - EXIT!!!\n");
 }
 
@@ -243,6 +257,9 @@ int main() {
         break;
       case 3:
         removeElement();
+        break;
+      case 4:
+        reverseLinkedList();
         break;
       case 99:
         flag = 0;
