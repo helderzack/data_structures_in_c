@@ -9,29 +9,9 @@ struct Node{
 struct Node* head = NULL;
 int counter = 0;
 
-void printElements() {
-  if (head == NULL) {
-    printf("There are no elements in the linked list\n");
-    return;
-  }
-
-  struct Node* navigator = head;
-
-  printf("[ ");
-  while(navigator != NULL) {
-    printf("%d ", navigator->value);
-    navigator = navigator->next;
-  }
-  printf("]\n");
-}
-
 void reverseLinkedList() {
   if (head == NULL) {
     printf("There are no elements in the linked list\n");
-    return;
-  }
-
-  if (counter == 1) {
     return;
   }
 
@@ -49,12 +29,22 @@ void reverseLinkedList() {
   head = previous;
 }
 
+void printLinkedListRecursively(struct Node* navigator) {
+  if (navigator == NULL) return;
+  printf("%d ", navigator->value);
+  printLinkedListRecursively(navigator->next);
+}
+
+void printReversedLinkedListRecursively(struct Node* navigator) {
+  if (navigator == NULL) return;
+  printReversedLinkedListRecursively(navigator->next);
+  printf("%d ", navigator->value);
+}
+
 void pushElementAtTheBeginningOfTheList(int value) {
   struct Node* newNode = (struct Node*) malloc (sizeof(struct Node));
   newNode->value = value;
-
   newNode->next = head;
-
   head = newNode;
 }
 
@@ -233,9 +223,10 @@ void freeUsedMemoryFromLinkedList() {
 
 void menu() {
   printf("1 - Print Elements\n");
-  printf("2 - Insert Element\n");
-  printf("3 - Remove Element\n");
-  printf("4 - Reverse Linked List\n");
+  printf("2 - Prints Elements in Reverse\n");
+  printf("3 - Insert Element\n");
+  printf("4 - Remove Element\n");
+  printf("5 - Reverse Linked List\n");
   printf("99 - EXIT!!!\n");
 }
 
@@ -250,15 +241,18 @@ int main() {
 
     switch(option) {
       case 1:
-        printElements();
+        printLinkedListRecursively(head);
         break;
       case 2:
-        insertElement();
+        printReversedLinkedListRecursively(head);
         break;
       case 3:
-        removeElement();
+        insertElement();
         break;
       case 4:
+        removeElement();
+        break;
+      case 5:
         reverseLinkedList();
         break;
       case 99:
