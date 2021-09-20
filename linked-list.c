@@ -9,24 +9,15 @@ struct Node{
 struct Node* head = NULL;
 int counter = 0;
 
-void reverseLinkedList() {
-  if (head == NULL) {
-    printf("There are no elements in the linked list\n");
+void reverseLinkedListRecursively(struct Node* current, struct Node* previous) {
+  if (current == NULL) {
+    head = previous;
     return;
   }
 
-  struct Node* current = head;
-  struct Node* previous = NULL;
-  struct Node* next;
-
-  while(current != NULL) {
-    next = current->next;
-    current->next = previous;
-    previous = current;
-    current = next;
-  }
-
-  head = previous;
+  struct Node* next = current->next;
+  current->next = previous;
+  reverseLinkedListRecursively(next, current);
 }
 
 void printLinkedListRecursively(struct Node* navigator) {
@@ -253,7 +244,8 @@ int main() {
         removeElement();
         break;
       case 5:
-        reverseLinkedList();
+        struct Node* previous = NULL;
+        reverseLinkedListRecursively(head, previous);
         break;
       case 99:
         flag = 0;
