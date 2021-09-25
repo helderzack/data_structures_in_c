@@ -12,34 +12,27 @@ void printQueue(struct Node* current) {
   printQueue(current->next);
 }
 
-void enqueue(struct Node** head) {
+void enqueue(struct Node** head, struct Node** tail) {
   int data;
   printf("What's the value you want to add?\n");
   scanf("%d", &data);
 
-  if ((*head) == NULL) {
-    (*head) = (struct Node*) malloc(sizeof(struct Node));
-    (*head)->data = data;
-    (*head)->next = NULL;
-    return;
-  };
-
-  struct Node* current = (*head);
-
-  while(current->next != NULL) {
-    current = current->next;
-  }
-
   struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
   newNode->data = data;
-  current->next = newNode;
   newNode->next = NULL;
+
+  if ((*tail) != NULL) (*tail)->next = newNode;
+
+  (*tail) = newNode;
+
+  if ((*head) == NULL) (*head) = (*tail);
 }
 
-void dequeue(struct Node** head) {
+void dequeue(struct Node** head, struct Node** tail) {
   if((*head) == NULL) return;
   struct Node* deletedNode = *head;
   *head = (*head)->next;
+  if((*head) == NULL) (*tail) = NULL;
   free(deletedNode);
 }
 
@@ -65,6 +58,7 @@ void menu() {
 
 int main() {
   struct Node* head = NULL;
+  struct Node* tail = NULL;
 
   int flag = 1;
 
@@ -79,10 +73,10 @@ int main() {
         printQueue(head);
         break;
       case 2:
-        enqueue(&head);
+        enqueue(&head, &tail);
         break;
       case 3:
-        dequeue(&head);
+        dequeue(&head, &tail);
         break;
       case 99:
         flag = 0;
